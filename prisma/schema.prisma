@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// EMPRESAS
+
+model Company {
+  id        Int      @id(map: "Company_pkey") @default(autoincrement())
+  name      String
+  taxId     String   @unique(map: "Company_taxId_key")
+  email     String   @unique(map: "Company_email_key")
+  phone     String?
+  address   String?
+  city      String?
+  state     String?
+  zip       String?
+  country   String?
+  logo      String?
+  isActive  Boolean  @default(true)
+  description String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("company")
+}
+
+// ============================================
+// USUARIOS
+
+model User {
+  id              Int       @id @default(autoincrement())
+  email           String    @unique
+  username        String?   @unique
+  password        String
+  name            String?
+  lastName        String?
+  phone           String?
+  avatar          String?
+  bio             String?
+  
+  // Ubicación
+  address         String?
+  city            String?
+  country         String?
+  
+  // Seguridad
+  emailVerified   Boolean   @default(false)
+  phoneVerified   Boolean   @default(false)
+  lastLogin       DateTime?
+  
+  // Control
+  role            String    @default("user")
+  isActive        Boolean   @default(true)
+  status          String    @default("active")  // active, suspended, banned
+  
+  // Timestamps
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+    
+  @@index([isActive, status])
+  @@index([role])
+  @@index([createdAt])
+  @@map("users")
+}
+
